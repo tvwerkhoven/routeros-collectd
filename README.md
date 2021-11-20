@@ -27,6 +27,11 @@ LoadPlugin python
 ```
 4. Restart collectd, check log file for issues: `sudo systemctl restart collectd && sudo systemctl restart collectd`
 
+# Todo
+
+1. Allow for multiple routers to be monitored
+2. Allow for multiple interfaces to be monitored
+
 # Sources
 
 * [Danilo Bargen on "How to Write a Collectd Plugin with Python"](https://blog.dbrgn.ch/2017/3/10/write-a-collectd-python-plugin/)
