@@ -1,25 +1,13 @@
 #!/usr/bin/env python3
+# 
 # routeros collectd plugin built on librouteros-py
-#
-# Use this in collectd.conf:
-# LoadPlugin python
-# <Plugin python>
-#     ModulePath "/path/to/routeros-collectd"
-#     Import "routeros"
-#     <Module routeros>
-#         Host "127.0.0.1"
-#         User "username"
-#         Password "password"
-#         Interface "sfp1"     # Interface to track traffic for
-#     </Module>
-# </Plugin>
 
 import collectd
 import ssl
 from librouteros import connect
 
-
 HOST = '127.0.0.1'		# host to connect to
+HOSTNAME = 'mikrotik'   # name to use as host for collectd
 USER = 'user'			# username, set in system -> users
 PASSWORD = 'password'	# username, set in system -> users
 INTERFACE = 'ether0'	# interface to track tx/rx for, usually used for WAN interface
@@ -34,6 +22,10 @@ def config_func(config):
 			global HOST
 			HOST = val
 			collectd.info('routeros plugin: Using overridden HOST %s' % HOST)
+		elif key == 'HOSTNAME':
+			global HOSTNAME
+			HOSTNAME = val
+			collectd.info('routeros plugin: Using overridden HOSTNAME %s' % HOSTNAME)
 		elif key == 'USER':
 			global USER
 			USER = val
@@ -75,24 +67,24 @@ def read_func():
 	# {'uptime': '4d7h27m6s', 'version': '6.47 (stable)', 'build-time': 'Jun/02/2020 07:38:00', 'free-memory': 48701440, 'total-memory': 134217728, 'cpu': 'MIPS 74Kc V4.12', 'cpu-count': 1, 'cpu-frequency': 600, 'cpu-load': 2, 'free-hdd-space': 108892160, 'total-hdd-space': 134217728, 'write-sect-since-reboot': 311063, 'write-sect-total': 550052, 'bad-blocks': '0.1', 'architecture-name': 'mipsbe', 'board-name': 'RB2011UiAS', 'platform': 'MikroTik'}
 
 	# Dispatch values to collectd
-	val = collectd.Values(host='rb2011', plugin='cpu', type='percent', type_instance='active')
+	val = collectd.Values(host=HOSTNAME, plugin='cpu', type='percent', type_instance='active')
 	# val.plugin = 'routeros'
 	val.dispatch(values=[tuple(resources)[0]['cpu-load']])
 
-	val2 = collectd.Values(host='rb2011', plugin='memory', type='memory', type_instance='free')
+	val2 = collectd.Values(host=HOSTNAME, plugin='memory', type='memory', type_instance='free')
 	# val2.plugin = 'routeros'
 	val2.dispatch(values=[tuple(resources)[0]['free-memory']])
 
 	# Get INTERFACE Tx/Rx data
 	for intf in interfaces:
 		if (intf['name'] == INTERFACE):
-			val3 = collectd.Values(host='rb2011', plugin='interface', plugin_instance=INTERFACE, type='if_octets')
+			val3 = collectd.Values(host=HOSTNAME, plugin='interface', plugin_instance=INTERFACE, type='if_octets')
 			val3.dispatch(values=[intf['rx-byte'],intf['tx-byte']])
-			val4 = collectd.Values(host='rb2011', plugin='interface', plugin_instance=INTERFACE, type='if_packets')
+			val4 = collectd.Values(host=HOSTNAME, plugin='interface', plugin_instance=INTERFACE, type='if_packets')
 			val4.dispatch(values=[intf['rx-packet'],intf['tx-packet']])
-			val5 = collectd.Values(host='rb2011', plugin='interface', plugin_instance=INTERFACE, type='if_dropped')
+			val5 = collectd.Values(host=HOSTNAME, plugin='interface', plugin_instance=INTERFACE, type='if_dropped')
 			val5.dispatch(values=[intf['rx-drop'],intf['tx-drop']])
-			val6 = collectd.Values(host='rb2011', plugin='interface', plugin_instance=INTERFACE, type='if_errors')
+			val6 = collectd.Values(host=HOSTNAME, plugin='interface', plugin_instance=INTERFACE, type='if_errors')
 			val6.dispatch(values=[intf['rx-error'],intf['tx-error']])
 
 
