@@ -11,7 +11,10 @@ This plugin collects the following parameters from a MikroTik router:
 
 1. Store `routeros.py` in a known location accessible by the `collectd` daemon, e.g. `/opt/collectd_plugins/`
 2. Create a user on your MikroTik router with read only access via web interface under System -> Users
-3. Update `collectd.conf` to configure credentials and interface to monitor (probably your WAN interface):
+3. Update `collectd.conf` to configure:
+    1. Host, user, password: credentials to connect to
+    2. Hostname: collectd host label to use for metrics
+    3. Interface: interface to monitor (probably your WAN interface)
 ```apache
 LoadPlugin python
 <Plugin python>
@@ -19,6 +22,7 @@ LoadPlugin python
     Import "routeros"
     <Module routeros>
         Host "127.0.0.1"
+        Hostname "mikrotik"
         User "username"
         Password "password"
         Interface "ether10"
