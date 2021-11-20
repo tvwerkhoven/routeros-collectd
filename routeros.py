@@ -66,6 +66,9 @@ def read_func():
 	resources = API.path('system', 'resource')
 	# {'uptime': '4d7h27m6s', 'version': '6.47 (stable)', 'build-time': 'Jun/02/2020 07:38:00', 'free-memory': 48701440, 'total-memory': 134217728, 'cpu': 'MIPS 74Kc V4.12', 'cpu-count': 1, 'cpu-frequency': 600, 'cpu-load': 2, 'free-hdd-space': 108892160, 'total-hdd-space': 134217728, 'write-sect-since-reboot': 311063, 'write-sect-total': 550052, 'bad-blocks': '0.1', 'architecture-name': 'mipsbe', 'board-name': 'RB2011UiAS', 'platform': 'MikroTik'}
 
+	health = API.path('system', 'health')
+	# {'voltage': 24, 'temperature': 39}
+
 	# Dispatch values to collectd
 	val = collectd.Values(host=HOSTNAME, plugin='cpu', type='percent', type_instance='active')
 	# val.plugin = 'routeros'
@@ -86,6 +89,9 @@ def read_func():
 			val5.dispatch(values=[intf['rx-drop'],intf['tx-drop']])
 			val6 = collectd.Values(host=HOSTNAME, plugin='interface', plugin_instance=INTERFACE, type='if_errors')
 			val6.dispatch(values=[intf['rx-error'],intf['tx-error']])
+
+	val7 = collectd.Values(host=HOSTNAME, plugin='sensors', type='temperature', type_instance='cpu')
+	val7.dispatch(values=[tuple(health)[0]['temperature']])
 
 
 collectd.register_config(config_func)
