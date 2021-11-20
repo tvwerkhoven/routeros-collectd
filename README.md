@@ -1,6 +1,6 @@
 # routeros-collectd
 
-Python Collectd plugin for RouterOS/MikroTik using the Python [librouteros](https://pypi.org/project/librouteros/) and [collectd-python](https://collectd.org/documentation/manpages/collectd-python.5.shtml).
+Python Collectd plugin for RouterOS/MikroTik using the Python [librouteros](https://pypi.org/project/librouteros/) and [collectd-python](https://collectd.org/documentation/manpages/collectd-python.5.shtml), superseding the abandoned [Plugin:RouterOS](https://collectd.org/wiki/index.php/Plugin:RouterOS)
 
 This plugin collects the following parameters from a MikroTik router:
 * cpu: percent active (from `/system resource monitor`)
@@ -26,3 +26,8 @@ LoadPlugin python
 </Plugin>
 ```
 4. Restart collectd, check log file for issues: `sudo systemctl restart collectd && sudo systemctl restart collectd`
+
+# Sources
+
+* [Danilo Bargen on "How to Write a Collectd Plugin with Python"](https://blog.dbrgn.ch/2017/3/10/write-a-collectd-python-plugin/)
+* [Collectd-python man page](https://collectd.org/documentation/manpages/collectd-python.5.shtml)
