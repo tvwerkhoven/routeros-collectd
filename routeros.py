@@ -10,7 +10,7 @@
 #         Host "127.0.0.1"
 #         User "username"
 #         Password "password"
-#
+#         Interface "sfp1"     # Interface to track traffic for
 #     </Module>
 # </Plugin>
 
@@ -76,22 +76,25 @@ def read_func():
 
 	# Dispatch values to collectd
 	val = collectd.Values(host='rb2011', plugin='cpu', type='percent', type_instance='active')
-	val.plugin = 'routeros'
+	# val.plugin = 'routeros'
 	val.dispatch(values=[tuple(resources)[0]['cpu-load']])
 
 	val2 = collectd.Values(host='rb2011', plugin='memory', type='memory', type_instance='free')
-	val2.plugin = 'routeros'
+	# val2.plugin = 'routeros'
 	val2.dispatch(values=[tuple(resources)[0]['free-memory']])
 
 	# Get INTERFACE Tx/Rx data
 	for intf in interfaces:
 		if (intf['name'] == INTERFACE):
-			val3 = collectd.Values(host='rb2011', plugin='interface', type='if_rx_octets', type_instance=INTERFACE)
-			val3.plugin = 'routeros'
-			val3.dispatch(values=[intf['rx-byte']])
-			val4 = collectd.Values(host='rb2011', plugin='interface', type='if_tx_octets', type_instance=INTERFACE)
-			val4.plugin = 'routeros'
-			val4.dispatch(values=[intf['tx-byte']])
+			val3 = collectd.Values(host='rb2011', plugin='interface', plugin_instance=INTERFACE, type='if_octets')
+			val3.dispatch(values=[intf['rx-byte'],intf['tx-byte']])
+			val4 = collectd.Values(host='rb2011', plugin='interface', plugin_instance=INTERFACE, type='if_packets')
+			val4.dispatch(values=[intf['rx-packet'],intf['tx-packet']])
+			val5 = collectd.Values(host='rb2011', plugin='interface', plugin_instance=INTERFACE, type='if_dropped')
+			val5.dispatch(values=[intf['rx-drop'],intf['tx-drop']])
+			val6 = collectd.Values(host='rb2011', plugin='interface', plugin_instance=INTERFACE, type='if_errors')
+			val6.dispatch(values=[intf['rx-error'],intf['tx-error']])
+
 
 collectd.register_config(config_func)
 collectd.register_init(init_func)
