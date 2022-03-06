@@ -6,6 +6,7 @@ This plugin collects the following parameters from a MikroTik router:
 * cpu: percent active (from `/system resource monitor`)
 * memory: free (from `/system resource monitor`)
 * interface: if_octets, if_packets, if_errors, if_dropped (from `/interface`)
+* sensors: cpu temperature (from `/system health`)
 
 # Installation
 
